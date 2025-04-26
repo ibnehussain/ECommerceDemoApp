@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Checkout Page";
+}
+
+<h1>Checkout</h1>
+
+<form method="post" action="/Home/Checkout">
+    <label>Product Name:</label><br />
+    <input type="text" name="productName" /><br />
+    <label>Amount:</label><br />
+    <input type="number" name="amount" /><br /><br />
+    <button type="submit">Checkout</button>
+</form>
