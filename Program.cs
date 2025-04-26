@@ -20,7 +20,10 @@ builder.Services.AddOpenTelemetry()
     });
 
 builder.Services.AddControllersWithViews();
-
+// Add this temporary debug code before builder.Build():
+var configValue = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+Console.WriteLine($"AI Connection String: {(string.IsNullOrEmpty(configValue) ? "NOT FOUND" : "CONFIGURED")}");
+//
 var app = builder.Build();
 app.UseStaticFiles();
 app.UseRouting();
