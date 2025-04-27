@@ -15,15 +15,12 @@ builder.Services.AddOpenTelemetry()
             .AddHttpClientInstrumentation()
             .AddAzureMonitorTraceExporter(options =>
             {
-                options.ConnectionString = builder.Configuration["InstrumentationKey=84defd7c-1712-4751-bb51-826ad87a58aa;IngestionEndpoint=https://canadacentral-1.in.applicationinsights.azure.com/;LiveEndpoint=https://canadacentral.livediagnostics.monitor.azure.com/;ApplicationId=36f1881b-0e5e-4f55-9276-344df959c29d"];
+                options.ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
             });
     });
 
 builder.Services.AddControllersWithViews();
-// Add this temporary debug code before builder.Build():
-var configValue = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
-Console.WriteLine($"AI Connection String: {(string.IsNullOrEmpty(configValue) ? "NOT FOUND" : "CONFIGURED")}");
-//
+
 var app = builder.Build();
 app.UseStaticFiles();
 app.UseRouting();

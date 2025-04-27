@@ -15,16 +15,11 @@ namespace ECommerceDemoApp.Controllers
         [HttpPost]
         public IActionResult Checkout(string productName, decimal amount)
         {
-            Console.WriteLine($"DEBUG: Starting checkout for {productName}"); // Debug log 1
-
-            using var activity = ActivitySource.StartActivity("Checkout.Process");
-            if (activity == null)
+            using (var activity = ActivitySource.StartActivity("Checkout Process"))
             {
-                Console.WriteLine("ERROR: OpenTelemetry activity was NOT created!"); // Debug log 2
-            }
-            else
-            {
-                Console.WriteLine($"DEBUG: TraceId={activity.TraceId}"); // Debug log 3
+                activity?.SetTag("product.name", productName);
+                activity?.SetTag("order.amount", amount);
+                activity?.SetTag("user.id", "user789"); // Simulated user id
             }
 
             return Content($"Checkout Complete! Product: {productName}, Amount: {amount:C}");
