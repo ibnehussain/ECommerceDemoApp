@@ -1,28 +1,39 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using OpenTelemetry.Trace;
 
 namespace ECommerceDemoApp.Controllers
 {
     public class HomeController : Controller
     {
-        private static readonly ActivitySource ActivitySource = new("ECommerceDemoApp");
+        private readonly Tracer _tracer;
+
+        public HomeController(TracerProvider tracerProvider)
+        {
+            _tracer = tracerProvider.GetTracer("ECommerceDemoAppTracer");
+        }
 
         public IActionResult Index()
         {
+            // This is a normal page
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Checkout(string productName, decimal amount)
+        public IActionResult Checkout()
         {
-            using (var activity = ActivitySource.StartActivity("Checkout Process"))
+            // Example: adding custom span
+            using (var span = _tracer.StartActiveSpan("CheckoutOperation", SpanKind.Server))
             {
-                activity?.SetTag("product.name", productName);
-                activity?.SetTag("order.amount", amount);
-                activity?.SetTag("user.id", "user789"); // Simulated user id
+                span.SetAttribute("ecommerce.checkout.product", "Laptop");
+                span.SetAttribute("ecommerce.checkout.price", 1500);
+                span.SetAttribute("ecommerce.checkout.currency", "USD");
+
+                // Simulate work
+                System.Threading.Thread.Sleep(500);
+
+                span.End();
             }
 
-            return Content($"Checkout Complete! Product: {productName}, Amount: {amount:C}");
+            return View();
         }
     }
 }
